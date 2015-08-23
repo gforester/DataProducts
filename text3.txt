@@ -1,0 +1,9 @@
+Select the desired tab Tooth Growth or Exponential Simulation - CLT.
+
+Tooth Growth displays boxplot of tooth length distribution as a function of vitamin C dose
+ or supplement. A selection box allow you select either "dose" or "supp"
+ 
+ Exponential Simulation - CLT: Move the slider bars to vary sample size and the exponential 
+ distribution (nexp) lambda parameter. 
+ 
+ 
