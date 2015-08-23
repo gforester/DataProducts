@@ -1,0 +1,75 @@
+Why Use  Shiny App?
+========================================================
+author: George F
+date: `r date()`
+
+Why Should We USe This Shiny Application?
+========================================================
+
+- Allows the user to view  interactive Charts without need to have R installed.
+- Both applications demonstrate the ability for users to easily change input parameters and see the changes displayed
+- Click on the link to open the application: [shiny app](https://gforester.shinyapps.io/project)
+
+Details: Exponential Simulation
+========================================================
+The Exponential Simulation CLT tab  demonstrates how a user can change sample size and $\lambda$ to see the effects of 1000 simulations of the Exponential Distribution and plotting the means of means. This app demonstrates the CLT
+
+- The **Central Limit Theorem** (CLT)  
+- The result is that 
+$$\frac{\bar X_n - \mu}{\sigma / \sqrt{n}}=
+\frac{\sqrt n (\bar X_n - \mu)}{\sigma}
+= \frac{\mbox{Estimate} - \mbox{Mean of estimate}}{\mbox{Std. Err. of estimate}}$$ has a distribution like that of a standard normal for large $n$.
+- The useful way to think about the CLT is that 
+$\bar X_n$ is approximately
+$N(\mu, \sigma^2 / n)$
+
+Example Plot
+==============================
+Running only in R your limited to sample size = 40 and lambda ($\lambda$) = 0.2.
+```{r , echo=FALSE, height=4, width= 5}
+require(ggplot2)
+require(dplyr)
+
+plotsimulations <<- function() {
+set.seed(10)
+nosim <- 1000  
+cfunc <- function(x, n) sqrt(n) * (mean(x) - 5) / 5 
+dat <- data.frame(
+        x= c(apply(matrix(sample(rexp(40,0.2), nosim * 40, replace = TRUE), 
+                          nosim), 1, cfunc, 40)), # 1000 simualations 
+        size = factor(rep(40))
+        )
+ dat <- dat %>%
+        mutate(meansample = mean(x), varsample = var(x) )
+ 
+
+# geom_text(aes(label= paste("mean =", round(mean(x,na.rm=T),3))),x = 1, y = 0.5, size=4)
+g <- ggplot(dat, aes(x = x, fill=size)) + geom_histogram(alpha = .20, binwidth=.3, colour = "black", aes(y = ..density..)) + 
+        geom_vline(aes(xintercept=mean(x, na.rm=T)), linetype="dashed", colour="red", size=1) + 
+         
+        geom_text(aes(label= paste("normalized mean =", round(mean(x,na.rm=T),3),"\n",
+                                   "var =", round(var(x,na.rm=T),3), "\n",
+                                   "sd =", round(sd(x,na.rm=T),3))),
+                  x = 1, y = 0.5, size=4)
+g <- g + stat_function(fun = dnorm, size = 2) + labs(title = "Figure 1: Simulation of Exponential Distribution \n With Sample Size 40") 
+g
+}
+plotsimulations()
+
+```
+
+Leverage Shiny to Display Your R Applications
+========================================================
+ 
+ * The Tooth Growth tab demonstrates how you can select different factor variables and display the results
+ 
+        
+```{r, echo=FALSE, width=4, height=5}
+
+ g <- ggplot(ToothGrowth, aes(x=factor(supp), y=len))
+                p <- g + geom_boxplot(stat="boxplot", outlier.colour = "red", outlier.size = 3,
+                                      alpha=0.2) + geom_point() +
+                        labs(title = paste("Tooth Growth verses Supplement"), 
+                             x="supp", y = "Tooth Length")
+                p
+```
